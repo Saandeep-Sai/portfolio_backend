@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "argparse": "^2.0.1",
     "bcryptjs": "^2.4.3",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "entities": "^7.0.0",
     "express": "^4.18.2",
     "express-rate-limit": "^6.8.1",
     "express-session": "^1.17.3",
@@ -24,10 +26,14 @@
     "geoip-lite": "^1.4.10",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.1",
+    "linkify-it": "^5.0.0",
+    "mdurl": "^2.0.0",
     "node-cron": "^3.0.2",
     "nodemailer": "^6.9.4",
+    "punycode.js": "^2.3.1",
     "sentiment": "^5.0.2",
     "socket.io": "^4.7.2",
+    "uc.micro": "^2.1.0",
     "winston": "^3.10.0"
   },
   "devDependencies": {
