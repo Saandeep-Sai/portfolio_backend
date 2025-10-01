@@ -44,7 +44,7 @@ router.post('/', [
         tls: {
           rejectUnauthorized: false
         },
-        connectionTimeout: 10000,
+        connectionTimeout: 100000,
         greetingTimeout: 5000,
         socketTimeout: 10000
       });
