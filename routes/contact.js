@@ -9,9 +9,9 @@ const router = express.Router();
 
 // Submit contact form with validation
 router.post('/', [
-  body('name').trim().isLength({ min: 2, max: 100 }).escape(),
-  body('email').isEmail().normalizeEmail(),
-  body('message').trim().isLength({ min: 10, max: 1000 }).escape()
+  body('name').trim().isLength({ min: 1, max: 100 }),
+  body('email').isEmail(),
+  body('message').trim().isLength({ min: 1, max: 2000 })
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
