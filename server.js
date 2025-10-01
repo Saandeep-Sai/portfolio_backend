@@ -15,6 +15,7 @@ const { db, cache } = require('./config/database');
 require('dotenv').config();
 
 const app = express();
+app.set('trust proxy', 1); // Trust first proxy
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
