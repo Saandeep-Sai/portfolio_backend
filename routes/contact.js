@@ -30,25 +30,41 @@ router.post('/', [
       status: 'new'
     });
     
-    // Send basic email notification
+    // Send email notification
     try {
       const nodemailer = require('nodemailer');
       const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
         auth: {
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASS
-        }
+        },
+        tls: {
+          rejectUnauthorized: false
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 5000,
+        socketTimeout: 10000
       });
       
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
         subject: `New Contact: ${name}`,
-        text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
+        html: `
+          <h3>New Contact Form Submission</h3>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Message:</strong></p>
+          <p>${message}</p>
+        `
       });
+      
+      console.log('Email sent successfully');
     } catch (emailError) {
-      console.error('Email error:', emailError);
+      console.error('Email error:', emailError.message);
     }
     
     res.json({ message: 'Message sent successfully!' });
