@@ -18,7 +18,11 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: [
+      'http://localhost:3000',
+      'https://portfolio-lyart-nu-sc7l5tytkt.vercel.app',
+      process.env.FRONTEND_URL
+    ].filter(Boolean),
     methods: ['GET', 'POST']
   }
 });
@@ -50,7 +54,11 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(helmet());
 app.use(compression());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    'http://localhost:3000',
+    'https://portfolio-lyart-nu-sc7l5tytkt.vercel.app',
+    process.env.FRONTEND_URL
+  ].filter(Boolean),
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
