@@ -21,37 +21,40 @@ router.post('/', [
     
     const { name, email, message } = req.body;
     const ip = req.ip || req.connection.remoteAddress;
-    const geo = geoip.lookup(ip);
-    
-    // Analyze sentiment
-    const sentiment = await aiService.analyzeSentiment(message);
     
     const contact = await Contact.create({
       name,
       email,
       message,
-      sentiment,
       ip,
-      country: geo?.country || 'Unknown',
       status: 'new'
     });
     
-    // Send real-time notification to admin
-    const io = req.app.get('io');
-    io.to('admin').emit('new-contact', {
-      id: contact.id,
-      name,
-      email,
-      sentiment,
-      timestamp: contact.createdAt
-    });
-    
-    // Send notifications
-    await notificationService.sendContactNotification({ name, email, message });
+    // Send basic email notification
+    try {
+      const nodemailer = require('nodemailer');
+      const transporter = nodemailer.createTransporter({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS
+        }
+      });
+      
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: `New Contact: ${name}`,
+        text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
+      });
+    } catch (emailError) {
+      console.error('Email error:', emailError);
+    }
     
     res.json({ message: 'Message sent successfully!' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Contact error:', error);
+    res.status(500).json({ error: 'Failed to send message' });
   }
 });
 
