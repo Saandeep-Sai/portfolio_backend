@@ -36,6 +36,7 @@
     "nodemailer": "^6.10.1",
     "punycode.js": "^2.3.1",
     "sentiment": "^5.0.2",
+    "sharp": "^0.34.4",
     "socket.io": "^4.8.1",
     "uc.micro": "^2.1.0",
     "winston": "^3.18.3"
