@@ -17,15 +17,34 @@ require('dotenv').config();
 const app = express();
 app.set('trust proxy', 1); // Trust first proxy
 const server = createServer(app);
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://portfolio-lyart-nu-sc7l5tytkt.vercel.app',
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_PROD_URL
+].filter(Boolean);
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+
+  return /^https:\/\/portfolio-[a-z0-9-]+\.vercel\.app$/i.test(origin);
+};
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+};
+
 const io = new Server(server, {
-  cors: {
-    origin: [
-      'http://localhost:3000',
-      'https://portfolio-lyart-nu-sc7l5tytkt.vercel.app',
-      process.env.FRONTEND_URL
-    ].filter(Boolean),
-    methods: ['GET', 'POST']
-  }
+  cors: corsOptions
 });
 
 const PORT = process.env.PORT || 5000;
@@ -54,14 +73,8 @@ if (process.env.NODE_ENV !== 'production') {
 // Middleware
 app.use(helmet());
 app.use(compression());
-app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'https://portfolio-lyart-nu-sc7l5tytkt.vercel.app',
-    process.env.FRONTEND_URL
-  ].filter(Boolean),
-  credentials: true
-}));
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
