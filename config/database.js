@@ -1,6 +1,24 @@
 const admin = require('firebase-admin');
 require('dotenv').config();
 
+const requiredFirebaseEnvVars = [
+  'FIREBASE_PROJECT_ID',
+  'FIREBASE_PRIVATE_KEY_ID',
+  'FIREBASE_PRIVATE_KEY',
+  'FIREBASE_CLIENT_EMAIL',
+  'FIREBASE_CLIENT_ID'
+];
+
+const missingFirebaseEnvVars = requiredFirebaseEnvVars.filter(
+  (envVar) => !process.env[envVar]
+);
+
+if (missingFirebaseEnvVars.length > 0) {
+  console.warn(
+    `Missing Firebase env vars: ${missingFirebaseEnvVars.join(', ')}`
+  );
+}
+
 // Initialize Firebase Admin
 if (!admin.apps.length) {
   admin.initializeApp({
